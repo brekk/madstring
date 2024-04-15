@@ -1,6 +1,6 @@
 import { assertEquals, test } from "Test"
 
-import { codePointAt } from "./String"
+import { codePointAt, isCombiningChar, stringWidth } from "./String"
 
 
 
@@ -11,5 +11,42 @@ test(
     _ <- assertEquals(codePointAt(thumbs, 0), 128077)
     _ <- assertEquals(codePointAt(thumbs, 1), 56397)
     return assertEquals(codePointAt(thumbs, 2), -1)
+  },
+)
+
+
+test(
+  "isCombiningChar",
+  () => do {
+    _ <- assertEquals(isCombiningChar(768), true)
+    return assertEquals(isCombiningChar(879), true)
+  },
+)
+
+test(
+  "stringWidth",
+  () => do {
+    _ <- assertEquals(stringWidth("⛣"), 2)
+    _ <- assertEquals(stringWidth("abcde"), 5)
+    _ <- assertEquals(stringWidth("古池や"), 6)
+    _ <- assertEquals(stringWidth("あいうabc"), 9)
+    _ <- assertEquals(stringWidth("あいう★"), 7)
+    _ <- assertEquals(stringWidth("あいう★"), 8)
+    _ <- assertEquals(stringWidth("±"), 1)
+    _ <- assertEquals(stringWidth("ノード.js"), 9)
+    _ <- assertEquals(stringWidth("你好"), 4)
+    _ <- assertEquals(stringWidth("안녕하세요"), 10)
+    // _ <- assertEquals(stringWidth("A\uD83C\uDE00BC"), 5)
+    _ <- assertEquals(stringWidth("\u001B[31m\u001B[39m"), 0)
+    // _ <- assertEquals(stringWidth("\u001B[31m\u001B[39m"), 8)
+    // _ <- assertEquals(stringWidth("\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007"), 5)
+    // _ <- assertEquals(stringWidth("\u{231A}"), 2, "⌚ default emoji presentation character (Emoji_Presentation)")
+    // _ <- assertEquals(stringWidth("\u{2194}\u{FE0F}"), 2, "↔️ default text presentation character rendered as emoji")
+    // _ <- assertEquals(stringWidth("\u{1F469}"), 2, "👩 emoji modifier base (Emoji_Modifier_Base)")
+    // _ <- assertEquals(stringWidth("\u{1F469}\u{1F3FF}"), 2, "👩🏿 emoji modifier base followed by a modifier")
+    // _ <- assertEquals(stringWidth("\u{845B}\u{E0100}"), 2, "Variation Selectors")
+    // _ <- assertEquals(stringWidth("ปฏัก"), 3)
+    // _ <- assertEquals(stringWidth("_\u0E34"), 1)
+    return assertEquals(stringWidth("“"), 2)
   },
 )
